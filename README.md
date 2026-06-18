@@ -26,6 +26,7 @@ The application separates responsibilities into:
 
 - Deposit money into the current customer's account
 - Withdraw money from the current customer's account
+- Check the current account balance
 - View current balance after every transaction
 
 ### Transfer (Planned)
@@ -67,6 +68,7 @@ tests/
 login [name]
 deposit [amount]
 withdraw [amount]
+balance
 transfer [target] [amount]
 logout
 ```
@@ -135,6 +137,16 @@ npm test
 - Rejects withdrawals that exceed the available balance
 - Requires an authenticated customer session
 - Does not modify account balance when a withdrawal fails
+
+### Balance
+
+#### Valid Balance Checks
+
+- Returns the current customer balance
+
+#### Invalid Balance Checks
+
+- Requires an authenticated customer session
 
 ## Assumptions
 

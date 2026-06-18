@@ -4,19 +4,6 @@ import assert from "node:assert/strict";
 import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.deposit", () => {
-    test("should show current balance", () => {
-        const atm = new ATMService();
-
-        atm.login("Alice");
-        atm.deposit(100);
-
-        const result = atm.balance();
-
-        assert.deepEqual(result, [
-            "Your balance is $100",
-        ]);
-    });
-
     test("deposit should increase balance", () => {
         const atm = new ATMService();
 
