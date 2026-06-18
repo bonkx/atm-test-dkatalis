@@ -40,6 +40,30 @@ describe("ATMService.transfer", () => {
         ]);
     });
 
+    test("transfer negative amount should throw", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+        atm.deposit(100);
+
+        assert.throws(
+            () => atm.transfer("Bob", -50),
+            /Amount must be greater than 0/,
+        );
+    });
+
+    test("transfer to self should throw", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+        atm.deposit(100);
+
+        assert.throws(
+            () => atm.transfer("Alice", 50),
+            /Cannot transfer to yourself/,
+        );
+    });
+
     test("transfer without login should throw", () => {
         const atm = new ATMService();
 
