@@ -17,7 +17,7 @@ describe("ATMService.withdraw", () => {
         ]);
     });
 
-    test("should throw error when withdrawal amount exceeds balance", () => {
+    test("should reject withdrawal when balance is insufficient", () => {
         const atm = new ATMService();
 
         atm.login("Bob");
