@@ -28,6 +28,26 @@ export class ATMService {
         return this.currentCustomer;
     }
 
+    private getDebtKey(from: string, to: string): string {
+        return `${from}->${to}`;
+    }
+
+    private getOrCreateDebt(
+        from: string,
+        to: string,
+    ): Debt {
+        const key = this.getDebtKey(from, to);
+
+        let debt = this.debts.get(key);
+
+        if (!debt) {
+            debt = new Debt(from, to, 0);
+            this.debts.set(key, debt);
+        }
+
+        return debt;
+    }
+
 
 
     // Public methods
@@ -93,7 +113,45 @@ export class ATMService {
     }
 
     transfer(target: string, amount: number): string[] {
-        return [];
+        const sender = this.requireCurrentCustomer();
+
+        if (amount <= 0) {
+            throw new Error("Amount must be greater than 0");
+        }
+
+        if (sender.name === target) {
+            throw new Error("Cannot transfer to yourself");
+        }
+
+        const receiver =
+            this.getOrCreateCustomer(target);
+
+        const balance =
+            sender.getBalance();
+
+        if (balance >= amount) {
+            sender.withdraw(amount);
+            receiver.deposit(amount);
+        } else {
+            sender.withdraw(balance);
+            receiver.deposit(amount);
+
+            const debtAmount =
+                amount - balance;
+
+            const debt =
+                this.getOrCreateDebt(
+                    sender.name,
+                    receiver.name,
+                );
+
+            debt.add(debtAmount);
+        }
+
+        return [
+            `Transferred $${amount} to ${receiver.name}`,
+            `Your balance is $${sender.getBalance()}`
+        ];
     }
 
 }
