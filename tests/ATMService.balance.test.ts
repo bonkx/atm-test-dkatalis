@@ -25,4 +25,28 @@ describe("ATMService.balance", () => {
             /No customer is currently logged in/,
         );
     });
+
+    test("should return zero balance for new customer", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+
+        assert.deepEqual(
+            atm.balance(),
+            ["Your balance is $0"],
+        );
+    });
+
+    test("should reflect latest balance after deposit and withdrawal", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+        atm.deposit(100);
+        atm.withdraw(30);
+
+        assert.deepEqual(
+            atm.balance(),
+            ["Your balance is $70"],
+        );
+    });
 });
