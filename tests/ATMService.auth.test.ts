@@ -30,6 +30,21 @@ describe("ATMService.auth", () => {
         ]);
     });
 
+    test("should switch session when another customer logs in", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+        atm.deposit(100);
+
+        atm.login("Bob");
+
+        const result = atm.balance();
+
+        assert.deepEqual(result, [
+            "Your balance is $0",
+        ]);
+    });
+
     test("logout should clear current session", () => {
         const atm = new ATMService();
 
