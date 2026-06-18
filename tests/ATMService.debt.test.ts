@@ -165,4 +165,25 @@ describe("ATMService.debt", () => {
             ],
         );
     });
+
+    test("should keep debts to multiple creditors separately", () => {
+        const atm = new ATMService();
+
+        atm.login("Bob");
+
+        atm.transfer("Alice", 100);
+        atm.transfer("Charlie", 50);
+
+        atm.logout();
+
+        assert.deepStrictEqual(
+            atm.login("Bob"),
+            [
+                "Hello, Bob!",
+                "Your balance is $0",
+                "Owed $100 to Alice",
+                "Owed $50 to Charlie",
+            ],
+        );
+    });
 });
