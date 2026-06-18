@@ -32,6 +32,15 @@ export class ATMService {
         return `${from}->${to}`;
     }
 
+    private getDebt(
+        from: string,
+        to: string,
+    ): Debt | undefined {
+        return this.debts.get(
+            this.getDebtKey(from, to)
+        );
+    }
+
     private getOrCreateDebt(
         from: string,
         to: string,
@@ -46,6 +55,24 @@ export class ATMService {
         }
 
         return debt;
+    }
+
+    private getDebtsOwedBy(name: string): Debt[] {
+        return [...this.debts.values()]
+            .filter(debt => debt.from === name);
+    }
+
+    private getDebtsOwedTo(name: string): Debt[] {
+        return [...this.debts.values()]
+            .filter(debt => debt.to === name);
+    }
+
+    private cleanupDebts(): void {
+        for (const [key, debt] of this.debts.entries()) {
+            if (debt.isSettled()) {
+                this.debts.delete(key);
+            }
+        }
     }
 
 
@@ -63,6 +90,23 @@ export class ATMService {
         ];
 
         // append debt info
+        const owedTo =
+            this.getDebtsOwedBy(customer.name);
+
+        for (const debt of owedTo) {
+            lines.push(
+                `Owed $${debt.amount} to ${debt.to}`
+            );
+        }
+
+        const owedFrom =
+            this.getDebtsOwedTo(customer.name);
+
+        for (const debt of owedFrom) {
+            lines.push(
+                `Owed $${debt.amount} from ${debt.from}`
+            );
+        }
 
         return lines;
     }
@@ -91,11 +135,56 @@ export class ATMService {
             throw new Error("Amount must be greater than 0");
         }
 
-        customer.deposit(amount);
+        let remaining = amount;
 
-        return [
+        const lines: string[] = [];
+
+        const debts =
+            this.getDebtsOwedBy(customer.name);
+
+        for (const debt of debts) {
+            if (remaining === 0) {
+                break;
+            }
+
+            const payment = Math.min(
+                remaining,
+                debt.amount,
+            );
+
+            debt.reduce(payment);
+
+            const creditor =
+                this.getOrCreateCustomer(
+                    debt.to,
+                );
+
+            creditor.deposit(payment);
+
+            lines.push(
+                `Transferred $${payment} to ${creditor.name}`
+            );
+
+            remaining -= payment;
+        }
+
+        if (remaining > 0) {
+            customer.deposit(remaining);
+        }
+
+        this.cleanupDebts();
+
+        lines.push(
             `Your balance is $${customer.getBalance()}`
-        ];
+        );
+
+        for (const debt of this.getDebtsOwedBy(customer.name)) {
+            lines.push(
+                `Owed $${debt.amount} to ${debt.to}`
+            );
+        }
+
+        return lines;
     }
 
     withdraw(amount: number): string[] {
@@ -126,32 +215,74 @@ export class ATMService {
         const receiver =
             this.getOrCreateCustomer(target);
 
-        const balance =
-            sender.getBalance();
+        // Receiver owes sender
+        const receivable = this.getDebt(
+            receiver.name,
+            sender.name,
+        );
 
-        if (balance >= amount) {
-            sender.withdraw(amount);
-            receiver.deposit(amount);
-        } else {
-            sender.withdraw(balance);
-            receiver.deposit(amount);
+        if (receivable) {
+            const settled = Math.min(
+                receivable.amount,
+                amount,
+            );
 
-            const debtAmount =
-                amount - balance;
+            receivable.reduce(settled);
 
-            const debt =
-                this.getOrCreateDebt(
-                    sender.name,
-                    receiver.name,
-                );
+            this.cleanupDebts();
 
-            debt.add(debtAmount);
+            const remaining = amount - settled;
+
+            // Debt fully handled
+            if (remaining === 0) {
+                return [
+                    `Your balance is $${sender.getBalance()}`,
+                    ...this.getDebtsOwedTo(sender.name)
+                        .map(
+                            debt =>
+                                `Owed $${debt.amount} from ${debt.from}`
+                        ),
+                ];
+            }
+
+            // Continue with remaining amount
+            amount = remaining;
         }
 
-        return [
-            `Transferred $${amount} to ${receiver.name}`,
-            `Your balance is $${sender.getBalance()}`
+
+        const balance = sender.getBalance();
+
+        const transferred =
+            Math.min(balance, amount);
+
+        if (transferred > 0) {
+            sender.withdraw(transferred);
+            receiver.deposit(transferred);
+        }
+
+        const debtAmount =
+            amount - transferred;
+
+        if (debtAmount > 0) {
+            this.getOrCreateDebt(
+                sender.name,
+                receiver.name,
+            ).add(debtAmount);
+        }
+
+        const lines = [
+            `Transferred $${transferred} to ${receiver.name}`,
+            `Your balance is $${sender.getBalance()}`,
         ];
+
+        if (debtAmount > 0) {
+            lines.push(
+                `Owed $${debtAmount} to ${receiver.name}`
+            );
+        }
+
+        return lines;
+
     }
 
 }
