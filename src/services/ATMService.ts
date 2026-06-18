@@ -59,6 +59,10 @@ export class ATMService {
         const customer =
             this.requireCurrentCustomer();
 
+        if (amount <= 0) {
+            throw new Error("Amount must be greater than 0");
+        }
+
         customer.deposit(amount);
 
         return [
