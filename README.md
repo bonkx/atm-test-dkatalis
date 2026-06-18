@@ -2,6 +2,18 @@
 
 A simple Command Line Interface (CLI) application that simulates ATM interactions between bank customers.
 
+## Code - Github
+
+[https://github.com/bonkx/atm-test-dkatalis.git](https://github.com/bonkx/atm-test-dkatalis.git)
+
+## Design
+
+The application separates responsibilities into:
+
+- `Customer` – Domain entity responsible for account balance and business rules.
+- `ATMService` – Application service responsible for customer sessions and transaction orchestration.
+- `CommandParser` – CLI adapter responsible for parsing user commands and invoking application services.
+
 ## Features
 
 ### Authentication
@@ -107,6 +119,22 @@ npm test
 - Rejects zero amount deposits
 - Rejects negative amount deposits
 - Requires an authenticated customer session
+
+### Withdraw
+
+#### Valid Withdrawals
+
+- Decreases account balance
+- Allows withdrawing up to the available balance
+- Supports withdrawing the entire available balance
+
+#### Invalid Withdrawals
+
+- Rejects zero amount withdrawals
+- Rejects negative amount withdrawals
+- Rejects withdrawals that exceed the available balance
+- Requires an authenticated customer session
+- Does not modify account balance when a withdrawal fails
 
 ## Assumptions
 

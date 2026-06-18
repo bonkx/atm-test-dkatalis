@@ -22,7 +22,7 @@ export class ATMService {
 
     private requireCurrentCustomer(): Customer {
         if (!this.currentCustomer) {
-            throw new Error("No customer logged in");
+            throw new Error("No customer is currently logged in");
         }
 
         return this.currentCustomer;
@@ -55,6 +55,14 @@ export class ATMService {
         return [`Goodbye, ${customer.name}!`];
     }
 
+    balance(): string[] {
+        const customer = this.requireCurrentCustomer();
+
+        return [
+            `Your balance is $${customer.getBalance()}`
+        ];
+    }
+
     deposit(amount: number): string[] {
         const customer =
             this.requireCurrentCustomer();
@@ -71,7 +79,17 @@ export class ATMService {
     }
 
     withdraw(amount: number): string[] {
-        return [];
+        const customer = this.requireCurrentCustomer();
+
+        if (amount <= 0) {
+            throw new Error("Amount must be greater than 0");
+        }
+
+        customer.withdraw(amount);
+
+        return [
+            `Your balance is $${customer.getBalance()}`
+        ];
     }
 
     transfer(target: string, amount: number): string[] {
