@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.transfer", () => {
+
+    // Transfer mengurangi saldo pengirim
     test("should transfer using available balance", () => {
         const atm = new ATMService();
 
@@ -22,7 +24,7 @@ describe("ATMService.transfer", () => {
         ]);
     });
 
-
+    // Transfer negatif ditolak
     test("transfer negative amount should throw", () => {
         const atm = new ATMService();
 
@@ -35,6 +37,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
+    // Transfer ke diri sendiri ditolak
     test("transfer to self should throw", () => {
         const atm = new ATMService();
 
@@ -47,6 +50,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
+    // Harus login
     test("transfer without login should throw", () => {
         const atm = new ATMService();
 
@@ -56,6 +60,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
+    // Transfer menambah saldo penerima
     test("should transfer money to another customer", () => {
         const atm = new ATMService();
 
@@ -74,6 +79,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
+    // Transfer 0 ditolak
     test("transfer zero amount should throw", () => {
         const atm = new ATMService();
 

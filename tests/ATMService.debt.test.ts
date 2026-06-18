@@ -187,21 +187,19 @@ describe("ATMService.debt", () => {
         );
     });
 
-    test("should create debt when transfer exceeds balance", () => {
+    test("should consume entire balance before creating debt", () => {
         const atm = new ATMService();
 
         atm.login("Alice");
-
         atm.deposit(100);
 
-        atm.transfer("Bob", 150);
-
-        atm.logout();
-
-        atm.login("Alice");
-
-        assert.deepEqual(atm.balance(), [
-            "Your balance is $0"
-        ]);
+        assert.deepStrictEqual(
+            atm.transfer("Bob", 150),
+            [
+                "Transferred $100 to Bob",
+                "Your balance is $0",
+                "Owed $50 to Bob",
+            ],
+        );
     });
 });
