@@ -22,23 +22,6 @@ describe("ATMService.transfer", () => {
         ]);
     });
 
-    test("should create debt when transfer exceeds balance", () => {
-        const atm = new ATMService();
-
-        atm.login("Alice");
-
-        atm.deposit(100);
-
-        atm.transfer("Bob", 150);
-
-        atm.logout();
-
-        atm.login("Alice");
-
-        assert.deepEqual(atm.balance(), [
-            "Your balance is $0"
-        ]);
-    });
 
     test("transfer negative amount should throw", () => {
         const atm = new ATMService();
@@ -70,6 +53,36 @@ describe("ATMService.transfer", () => {
         assert.throws(
             () => atm.transfer("Bob", 50),
             /No customer is currently logged in/,
+        );
+    });
+
+    test("should transfer money to another customer", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+        atm.deposit(100);
+
+        atm.transfer("Bob", 50);
+
+        atm.logout();
+
+        atm.login("Bob");
+
+        assert.deepEqual(
+            atm.balance(),
+            ["Your balance is $50"],
+        );
+    });
+
+    test("transfer zero amount should throw", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+        atm.deposit(100);
+
+        assert.throws(
+            () => atm.transfer("Bob", 0),
+            /Amount must be greater than 0/,
         );
     });
 });

@@ -186,4 +186,22 @@ describe("ATMService.debt", () => {
             ],
         );
     });
+
+    test("should create debt when transfer exceeds balance", () => {
+        const atm = new ATMService();
+
+        atm.login("Alice");
+
+        atm.deposit(100);
+
+        atm.transfer("Bob", 150);
+
+        atm.logout();
+
+        atm.login("Alice");
+
+        assert.deepEqual(atm.balance(), [
+            "Your balance is $0"
+        ]);
+    });
 });
