@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "test": "npm run build && node --test dist/tests/**/*.js",
     "start": "ts-node src/index.ts"
   },
   "keywords": [],
@@ -12,11 +13,8 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "@types/jest": "^30.0.0",
     "@types/node": "^25.9.3",
     "eslint": "^10.5.0",
-    "jest": "^30.4.2",
-    "ts-jest": "^29.4.11",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }
