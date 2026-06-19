@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.debt", () => {
+
+    // Debt ke kreditur yang sama digabungkan
     test("should merge debt to same creditor", () => {
         const atm = new ATMService();
 
@@ -24,6 +26,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Kekurangan transfer menjadi debt
     test("should create debt when transfer exceeds balance", () => {
         const atm = new ATMService();
 
@@ -40,6 +43,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Deposit otomatis membayar debt
     test("should repay debt on deposit", () => {
         const atm = new ATMService();
 
@@ -56,6 +60,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Transfer balik mengurangi debt
     test("should reduce debt when creditor transfers to debtor", () => {
         const atm = new ATMService();
 
@@ -76,6 +81,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Debt dilunasi dulu sebelum transfer baru
     test("should settle debt then transfer remaining amount", () => {
         const atm = new ATMService();
 
@@ -96,6 +102,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Kreditur bisa melihat piutang
     test("should show debt owed from another customer", () => {
         const atm = new ATMService();
 
@@ -114,6 +121,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Debt lunas dihapus
     test("should remove debt when fully repaid", () => {
         const atm = new ATMService();
 
@@ -133,6 +141,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Sisa deposit masuk saldo
     test("should keep remaining amount after debt repayment", () => {
         const atm = new ATMService();
 
@@ -148,6 +157,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Debt bisa ditutup tepat nominal
     test("should fully settle debt when creditor transfers exact debt amount", () => {
         const atm = new ATMService();
 
@@ -166,6 +176,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Debt dicatat per kreditur
     test("should keep debts to multiple creditors separately", () => {
         const atm = new ATMService();
 
@@ -187,6 +198,7 @@ describe("ATMService.debt", () => {
         );
     });
 
+    // Saldo digunakan sebelum membuat debt
     test("should consume entire balance before creating debt", () => {
         const atm = new ATMService();
 

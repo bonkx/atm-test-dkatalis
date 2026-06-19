@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.deposit", () => {
+
+    // Memastikan deposit menambah saldo customer.
     test("deposit should increase balance", () => {
         const atm = new ATMService();
 
@@ -16,6 +18,7 @@ describe("ATMService.deposit", () => {
         ]);
     });
 
+    // Memastikan beberapa deposit berturut-turut terakumulasi ke saldo yang sama.
     test("multiple deposits should accumulate balance", () => {
         const atm = new ATMService();
 
@@ -30,6 +33,7 @@ describe("ATMService.deposit", () => {
         ]);
     });
 
+    // Memastikan sistem menolak deposit dengan nominal 0.
     test("deposit zero amount should throw", () => {
         const atm = new ATMService();
 
@@ -41,6 +45,7 @@ describe("ATMService.deposit", () => {
         );
     });
 
+    // Memastikan sistem menolak deposit dengan nominal negatif.
     test("deposit negative amount should throw", () => {
         const atm = new ATMService();
 
@@ -52,6 +57,7 @@ describe("ATMService.deposit", () => {
         );
     });
 
+    // Memastikan deposit hanya bisa dilakukan oleh customer yang sedang login.
     test("deposit without login should throw", () => {
         const atm = new ATMService();
 
