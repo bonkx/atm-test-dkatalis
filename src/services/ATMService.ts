@@ -10,13 +10,18 @@ export class ATMService {
     // Helper methods
 
     private getOrCreateCustomer(name: string): Customer {
+        // Try to get existing customer from storage
         let customer = this.customers.get(name);
 
+        // Create a new customer if it does not exist
         if (!customer) {
             customer = new Customer(name);
+
+            // Store newly created customer for future use
             this.customers.set(name, customer);
         }
 
+        // Return existing or newly created customer
         return customer;
     }
 
@@ -25,10 +30,12 @@ export class ATMService {
             throw new Error("No customer is currently logged in");
         }
 
+        // Return currentCustomer
         return this.currentCustomer;
     }
 
     private getDebtKey(from: string, to: string): string {
+        // Generate unique key for a debt relationship
         return `${from}->${to}`;
     }
 
@@ -36,6 +43,7 @@ export class ATMService {
         from: string,
         to: string,
     ): Debt | undefined {
+        // Get debt relationship between debtor and creditor
         return this.debts.get(
             this.getDebtKey(from, to)
         );
@@ -45,29 +53,38 @@ export class ATMService {
         from: string,
         to: string,
     ): Debt {
+        // Generate unique key for the debt relationship
         const key = this.getDebtKey(from, to);
 
+        // Try to get existing debt
         let debt = this.debts.get(key);
 
+        // Create a new debt record if it does not exist
         if (!debt) {
             debt = new Debt(from, to, 0);
+
+            // Store newly created debt
             this.debts.set(key, debt);
         }
 
+        // Return existing or newly created debt
         return debt;
     }
 
     private getDebtsOwedBy(name: string): Debt[] {
+        // Return all debts where the customer is the debtor
         return [...this.debts.values()]
             .filter(debt => debt.from === name);
     }
 
     private getDebtsOwedTo(name: string): Debt[] {
+        // Return all debts where the customer is the creditor
         return [...this.debts.values()]
             .filter(debt => debt.to === name);
     }
 
     private cleanupDebts(): void {
+        // Remove fully settled debts from storage
         for (const [key, debt] of this.debts.entries()) {
             if (debt.isSettled()) {
                 this.debts.delete(key);
@@ -89,7 +106,7 @@ export class ATMService {
             `Your balance is $${customer.getBalance()}`,
         ];
 
-        // append debt info
+        // Show debts that the customer owes to others
         const owedTo =
             this.getDebtsOwedBy(customer.name);
 
@@ -99,6 +116,7 @@ export class ATMService {
             );
         }
 
+        // Show debts owed by others to the customer
         const owedFrom =
             this.getDebtsOwedTo(customer.name);
 
@@ -139,6 +157,7 @@ export class ATMService {
 
         const lines: string[] = [];
 
+        // Repay outstanding debts before adding money to balance
         const debts =
             this.getDebtsOwedBy(customer.name);
 
@@ -147,6 +166,8 @@ export class ATMService {
                 break;
             }
 
+            // Never repay more than the available deposit
+            // or the remaining debt amount
             const payment = Math.min(
                 remaining,
                 debt.amount,
@@ -168,10 +189,12 @@ export class ATMService {
             remaining -= payment;
         }
 
+        // Any remaining amount becomes available balance
         if (remaining > 0) {
             customer.deposit(remaining);
         }
 
+        // Remove debts that have been fully repaid
         this.cleanupDebts();
 
         lines.push(
@@ -194,6 +217,7 @@ export class ATMService {
             throw new Error("Amount must be greater than 0");
         }
 
+        // Withdraw funds from the current customer's account
         customer.withdraw(amount);
 
         return [
@@ -215,7 +239,7 @@ export class ATMService {
         const receiver =
             this.getOrCreateCustomer(target);
 
-        // Receiver owes sender
+        // First settle any debt the receiver owes to the sender
         const receivable = this.getDebt(
             receiver.name,
             sender.name,
@@ -233,7 +257,7 @@ export class ATMService {
 
             const remaining = amount - settled;
 
-            // Debt fully handled
+            // No transfer needed after debt settlement
             if (remaining === 0) {
                 return [
                     `Your balance is $${sender.getBalance()}`,
@@ -245,7 +269,7 @@ export class ATMService {
                 ];
             }
 
-            // Continue with remaining amount
+            // Process the remaining transfer amount
             amount = remaining;
         }
 
@@ -255,6 +279,7 @@ export class ATMService {
         const transferred =
             Math.min(balance, amount);
 
+        // Transfer available balance immediately
         if (transferred > 0) {
             sender.withdraw(transferred);
             receiver.deposit(transferred);
@@ -263,6 +288,7 @@ export class ATMService {
         const debtAmount =
             amount - transferred;
 
+        // Create debt for any unpaid transfer amount
         if (debtAmount > 0) {
             this.getOrCreateDebt(
                 sender.name,
