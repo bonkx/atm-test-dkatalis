@@ -5,7 +5,7 @@ import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.withdraw", () => {
 
-    // Memastikan customer dapat menarik saldo yang tersedia.
+    // Ensure customer can withdraw available balance.
     test("should withdraw money from current customer account", () => {
         const atm = new ATMService();
 
@@ -19,7 +19,7 @@ describe("ATMService.withdraw", () => {
         ]);
     });
 
-    // Memastikan sistem menolak penarikan jika saldo tidak mencukupi.
+    // Ensure the system rejects withdrawals when the balance is insufficient.
     test("should reject withdrawal when balance is insufficient", () => {
         const atm = new ATMService();
 
@@ -33,7 +33,7 @@ describe("ATMService.withdraw", () => {
 
     });
 
-    // Memastikan sistem menolak penarikan dengan nominal negatif dan tidak mengubah saldo customer.
+    // Ensure the system rejects withdrawals with an invalid amount and does not change the customer's balance.
     test("should not change balance when withdrawal amount is invalid", () => {
         const atm = new ATMService();
 
@@ -52,7 +52,7 @@ describe("ATMService.withdraw", () => {
         ]);
     });
 
-    // Memastikan nominal penarikan harus lebih besar dari nol.
+    // Ensure the withdrawal amount is greater than zero.
     test("should throw error when amount is zero", () => {
         const atm = new ATMService();
 
@@ -65,7 +65,7 @@ describe("ATMService.withdraw", () => {
         );
     });
 
-    // Memastikan hanya customer yang sedang login yang dapat melakukan penarikan.
+    // Ensure only logged-in customers can make withdrawals.
     test("should throw error when no customer is logged in", () => {
         const atm = new ATMService();
 
@@ -75,7 +75,7 @@ describe("ATMService.withdraw", () => {
         );
     });
 
-    // Memastikan customer dapat menarik seluruh saldo hingga habis.
+    // Ensure customers can withdraw their entire balance until it's depleted.
     test("should allow withdrawing exact balance", () => {
         const atm = new ATMService();
 

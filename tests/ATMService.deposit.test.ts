@@ -5,7 +5,7 @@ import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.deposit", () => {
 
-    // Memastikan deposit menambah saldo customer.
+    // Ensure deposits increase customer balances.
     test("deposit should increase balance", () => {
         const atm = new ATMService();
 
@@ -18,7 +18,7 @@ describe("ATMService.deposit", () => {
         ]);
     });
 
-    // Memastikan beberapa deposit berturut-turut terakumulasi ke saldo yang sama.
+    // Ensure multiple deposits accumulate to the same balance.
     test("multiple deposits should accumulate balance", () => {
         const atm = new ATMService();
 
@@ -33,7 +33,7 @@ describe("ATMService.deposit", () => {
         ]);
     });
 
-    // Memastikan sistem menolak deposit dengan nominal 0.
+    // Ensure the system rejects deposits with a zero amount.
     test("deposit zero amount should throw", () => {
         const atm = new ATMService();
 
@@ -45,7 +45,7 @@ describe("ATMService.deposit", () => {
         );
     });
 
-    // Memastikan sistem menolak deposit dengan nominal negatif.
+    // Ensure the system rejects deposits with a negative amount.
     test("deposit negative amount should throw", () => {
         const atm = new ATMService();
 
@@ -57,7 +57,7 @@ describe("ATMService.deposit", () => {
         );
     });
 
-    // Memastikan deposit hanya bisa dilakukan oleh customer yang sedang login.
+    // Ensure the system rejects deposits without a logged-in customer.
     test("deposit without login should throw", () => {
         const atm = new ATMService();
 

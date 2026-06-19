@@ -5,7 +5,7 @@ import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.balance", () => {
 
-    // Balance menampilkan saldo customer aktif
+    // Displays the active customer balance
     test("should return current balance", () => {
         const atm = new ATMService();
 
@@ -19,7 +19,7 @@ describe("ATMService.balance", () => {
         ]);
     });
 
-    // Balance tidak bisa diakses tanpa login
+    // Balance cannot be accessed without login
     test('should throw when no customer logged in', () => {
         const service = new ATMService();
 
@@ -29,7 +29,7 @@ describe("ATMService.balance", () => {
         );
     });
 
-    // Customer baru memiliki saldo awal 0
+    // New customers have an initial balance of 0
     test("should return zero balance for new customer", () => {
         const atm = new ATMService();
 
@@ -41,7 +41,7 @@ describe("ATMService.balance", () => {
         );
     });
 
-    // Balance selalu mengikuti transaksi terbaru
+    // Balance always reflects the latest transactions
     test("should reflect latest balance after deposit and withdrawal", () => {
         const atm = new ATMService();
 

@@ -5,7 +5,7 @@ import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.debt", () => {
 
-    // Debt ke kreditur yang sama digabungkan
+    // Debts to the same creditor are combined
     test("should merge debt to same creditor", () => {
         const atm = new ATMService();
 
@@ -26,7 +26,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Kekurangan transfer menjadi debt
+    // The transfer shortfall becomes debt
     test("should create debt when transfer exceeds balance", () => {
         const atm = new ATMService();
 
@@ -43,7 +43,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Deposit otomatis membayar debt
+    // Automatic deposits pay debt first
     test("should repay debt on deposit", () => {
         const atm = new ATMService();
 
@@ -60,7 +60,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Transfer balik mengurangi debt
+    // Transfer back reduces debt
     test("should reduce debt when creditor transfers to debtor", () => {
         const atm = new ATMService();
 
@@ -81,7 +81,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Debt dilunasi dulu sebelum transfer baru
+    // Debt must be paid off first before making a new transfer
     test("should settle debt then transfer remaining amount", () => {
         const atm = new ATMService();
 
@@ -102,7 +102,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Kreditur bisa melihat piutang
+    // Creditor can view their receivables
     test("should show debt owed from another customer", () => {
         const atm = new ATMService();
 
@@ -121,7 +121,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Debt lunas dihapus
+    // Debt that is paid off is removed from the system
     test("should remove debt when fully repaid", () => {
         const atm = new ATMService();
 
@@ -141,7 +141,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Sisa deposit masuk saldo
+    // Remaining deposit goes to balance after debt is repaid
     test("should keep remaining amount after debt repayment", () => {
         const atm = new ATMService();
 
@@ -157,7 +157,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Debt bisa ditutup tepat nominal
+    // Debt can be settled at the exact nominal amount
     test("should fully settle debt when creditor transfers exact debt amount", () => {
         const atm = new ATMService();
 
@@ -176,7 +176,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Debt dicatat per kreditur
+    // Debt is recorded per creditor
     test("should keep debts to multiple creditors separately", () => {
         const atm = new ATMService();
 
@@ -198,7 +198,7 @@ describe("ATMService.debt", () => {
         );
     });
 
-    // Saldo digunakan sebelum membuat debt
+    // Balance is consumed before creating debt
     test("should consume entire balance before creating debt", () => {
         const atm = new ATMService();
 

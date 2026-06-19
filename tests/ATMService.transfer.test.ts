@@ -5,7 +5,7 @@ import { ATMService } from "../src/services/ATMService.js";
 
 describe("ATMService.transfer", () => {
 
-    // Transfer mengurangi saldo pengirim
+    // Transfers reduce the sender's balance
     test("should transfer using available balance", () => {
         const atm = new ATMService();
 
@@ -24,7 +24,7 @@ describe("ATMService.transfer", () => {
         ]);
     });
 
-    // Transfer negatif ditolak
+    // Negative transfer rejected
     test("transfer negative amount should throw", () => {
         const atm = new ATMService();
 
@@ -37,7 +37,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
-    // Transfer ke diri sendiri ditolak
+    // Transfer to self rejected
     test("transfer to self should throw", () => {
         const atm = new ATMService();
 
@@ -50,7 +50,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
-    // Harus login
+    // Transfer without login rejected
     test("transfer without login should throw", () => {
         const atm = new ATMService();
 
@@ -60,7 +60,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
-    // Transfer menambah saldo penerima
+    // Transfer increases the recipient's balance
     test("should transfer money to another customer", () => {
         const atm = new ATMService();
 
@@ -79,7 +79,7 @@ describe("ATMService.transfer", () => {
         );
     });
 
-    // Transfer 0 ditolak
+    // Transfer zero amount rejected
     test("transfer zero amount should throw", () => {
         const atm = new ATMService();
 
