@@ -233,6 +233,14 @@ Execute all tests:
 npm test
 ```
 
+## Running with Shell Script
+
+Start application:
+
+```bash
+./start.sh
+```
+
 ---
 
 ## Test Coverage

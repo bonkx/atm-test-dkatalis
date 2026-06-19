@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "test": "npm run build && node --test dist/tests/**/*.js",
-    "start": "ts-node src/index.ts"
+    "start": "npm run build && node dist/src/index.js"
   },
   "keywords": [],
   "author": "",

@@ -30,7 +30,4 @@ export class Customer {
         return withdrawn;
     }
 
-    hasMoney(): boolean {
-        return this.balance > 0;
-    }
 }
